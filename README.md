@@ -10,7 +10,7 @@ Este paquete contiene únicamente `index.html` y este `README.md`. El HTML incor
 
 Para GitHub Pages, cargar **el contenido de esta carpeta** a la raíz del repositorio de publicación. En Settings → Pages, elegir **Deploy from a branch**, la rama de publicación y **/(root)**. El archivo de entrada es `index.html`, en minúsculas. No se requiere instalar dependencias ni compilar el sitio. Si se conserva la carpeta `git/` dentro de otro repositorio, se requiere un flujo de publicación que copie su contenido a la raíz del artefacto; GitHub Pages no ofrece `git/` como carpeta de origen en la configuración simple de rama. [Documentación oficial de GitHub Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/creating-a-github-pages-site).
 
-También puede abrirse `index.html` directamente sin conexión. JavaScript debe estar habilitado. El interruptor **Mostrar proyección** está apagado inicialmente y controla la línea proyectada, su banda, tabla y explicación. La estimación inicial de julio se conserva visible aunque la proyección esté apagada. El selector principal permite ver 3 o 6 meses, el último año, los últimos 2 años o toda la historia. Los periodos se cuentan hasta el último mes con información, incluida la estimación inicial; el horizonte de proyección se muestra a continuación. En la comparación histórica se pueden elegir 3 meses, 6 meses, el último año o la serie completa, hasta el último mes evaluado; el gráfico, la tabla y el resumen cambian juntos. La serie completa de la comparación comprende los doce meses evaluados en el corte actual; la del gráfico principal comienza en 2019. Las opciones de periodo se limitan a los datos disponibles; las flechas del teclado permiten consultar cada mes. Los botones de información muestran fuentes, unidades, definiciones y método. La línea del sismo aparece en todos los gráficos con eje temporal. La comparación histórica tiene dos líneas —observado y estimado— y una tabla mensual, correspondientes únicamente al método elegido para el IREC. Sus doce meses son anteriores al sismo; el marcador permanece al final de la ventana temporal, sin agregar observaciones.
+También puede abrirse `index.html` directamente sin conexión. JavaScript debe estar habilitado. El interruptor **Mostrar proyección** está apagado inicialmente y controla la línea proyectada, su banda, tabla y explicación. La estimación inicial de julio se conserva visible aunque la proyección esté apagada. El selector principal permite ver 3 o 6 meses, el último año, los últimos 2 años o toda la historia. Los periodos se cuentan hasta el último mes con información, incluida la estimación inicial; el horizonte de proyección se muestra a continuación. La comparación observado–estimado se conserva en la documentación técnica y los resultados internos. En el gráfico principal, las flechas del teclado permiten consultar cada mes. Los botones de información muestran fuentes, unidades, definiciones y método. La línea del sismo aparece en todos los gráficos con eje temporal. El recorrido público presenta el resumen del IREC, la disponibilidad del mes parcial, la evolución temporal y los aportes y movimientos de sus componentes. La proyección es opcional y permanece apagada inicialmente.
 
 ## Corte y resultados
 
@@ -157,7 +157,7 @@ Las referencias son: mismo mes del año anterior, último nivel ajustado y AR(1)
 | ingenuo_estacional | 12 | 1,133171 | 13,447842 |
 | persistencia_ajustada | 12 | 1,307728 | 13,939870 |
 
-La interfaz compara directamente el nivel observado con el nivel estimado a un mes. Los pronósticos originales por componente, guardados en `evaluacion_pronosticos_detalle.csv`, se agregan con los pesos del IREC. Para cada corte se reconstruyen STL y la base utilizando únicamente los meses anteriores al objetivo:
+La documentación técnica conserva la comparación del nivel observado con el nivel estimado a un mes. Los pronósticos originales por componente, guardados en `evaluacion_pronosticos_detalle.csv`, se agregan con los pesos del IREC. Para cada corte se reconstruyen STL y la base utilizando únicamente los meses anteriores al objetivo:
 
 ```text
 S_objetivo = estacionalidad del mismo mes del último ciclo disponible al corte
@@ -169,7 +169,24 @@ Diferencia_puntos = IREC_estimado − IREC_observado
 
 La estacionalidad y la base de cada mes son iguales para observado y estimado, y para todos los métodos. Se mantiene así una escala comparable sin introducir meses posteriores en la estimación. El observado de esta prueba puede diferir de la serie histórica revisada del gráfico principal. Cada punto estimado es un pronóstico independiente a un mes; la línea no representa una proyección acumulada de doce meses.
 
-`evaluacion_irec_observado_estimado.csv` conserva los 60 pares (cinco métodos × doce meses), su corte y diferencias. Se verifica que `100 × log(estimado/observado)` reproduzca el error agregado del paso 33, y que su RMSE coincida con la tabla anterior. El gráfico público presenta exclusivamente el modelo auxiliar que usa el IREC, sin selector de método. Los otros métodos se conservan en los resultados internos y en las tablas técnicas de este README. El HTML incorpora solo los doce pares del método elegido. Una tabla muestra los pares del periodo seleccionado (3, 6 o 12 meses, o serie completa) y una lectura señala, para ese mismo periodo, la diferencia absoluta media y el mes de mayor distancia, sin convertirlos en un porcentaje de precisión.
+`evaluacion_irec_observado_estimado.csv` conserva los 60 pares (cinco métodos × doce meses), su corte y diferencias. Se verifica que `100 × log(estimado/observado)` reproduzca el error agregado del paso 33, y que su RMSE coincida con la tabla anterior. El HTML no incluye esta comparación ni sus controles. Se conserva a continuación el detalle del método utilizado para completar y proyectar el IREC; las cinco alternativas permanecen en los resultados internos. Las diferencias son estimado menos observado, en puntos del índice, y no un porcentaje de precisión.
+
+| Mes | Información hasta | IREC observado | IREC estimado | Diferencia (puntos) |
+|---|---|---|---|---|
+| julio de 2025 | junio de 2025 | 122,50 | 96,32 | -26,19 |
+| agosto de 2025 | julio de 2025 | 103,28 | 113,80 | 10,52 |
+| septiembre de 2025 | agosto de 2025 | 101,22 | 103,92 | 2,70 |
+| octubre de 2025 | septiembre de 2025 | 108,58 | 106,83 | -1,75 |
+| noviembre de 2025 | octubre de 2025 | 103,21 | 106,77 | 3,55 |
+| diciembre de 2025 | noviembre de 2025 | 91,46 | 102,80 | 11,34 |
+| enero de 2026 | diciembre de 2025 | 134,45 | 100,94 | -33,51 |
+| febrero de 2026 | enero de 2026 | 118,62 | 102,41 | -16,21 |
+| marzo de 2026 | febrero de 2026 | 125,37 | 106,01 | -19,36 |
+| abril de 2026 | marzo de 2026 | 105,71 | 119,63 | 13,92 |
+| mayo de 2026 | abril de 2026 | 115,14 | 108,88 | -6,27 |
+| junio de 2026 | mayo de 2026 | 112,84 | 109,03 | -3,81 |
+
+En enero de 2026 la estimación quedó 24,93 % por debajo del observado de la prueba; en febrero, 13,66 % por debajo. Estas brechas evalúan el pronóstico auxiliar y no son diferencias entre dos índices públicos. El RMSE agregado del método elegido fue 13,98 puntos logarítmicos, frente a 13,45 de la referencia del mismo mes del año anterior; no se afirma una ventaja predictiva.
 
 La evaluación utiliza las versiones actuales de las fuentes, no archivos históricos de publicación. No se interpreta el mejor BIC como garantía de precisión predictiva; doce meses constituyen una evaluación inicial.
 
