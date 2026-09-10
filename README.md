@@ -10,7 +10,7 @@ Este paquete contiene únicamente `index.html` y este `README.md`. El HTML incor
 
 Para GitHub Pages, cargar **el contenido de esta carpeta** a la raíz del repositorio de publicación. En Settings → Pages, elegir **Deploy from a branch**, la rama de publicación y **/(root)**. El archivo de entrada es `index.html`, en minúsculas. No se requiere instalar dependencias ni compilar el sitio. Si se conserva la carpeta `git/` dentro de otro repositorio, se requiere un flujo de publicación que copie su contenido a la raíz del artefacto; GitHub Pages no ofrece `git/` como carpeta de origen en la configuración simple de rama. [Documentación oficial de GitHub Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/creating-a-github-pages-site).
 
-También puede abrirse `index.html` directamente sin conexión. JavaScript debe estar habilitado. El interruptor **Mostrar proyección** está apagado inicialmente y controla la línea proyectada, su banda, tabla y explicación. La estimación inicial de julio se conserva visible aunque la proyección esté apagada. El selector cambia el periodo del gráfico; las flechas del teclado permiten consultar cada mes. Los botones de información muestran fuentes, unidades, definiciones y método. La línea del sismo aparece en todos los gráficos con eje temporal. La evaluación de errores es un gráfico de barras sin eje de fechas.
+También puede abrirse `index.html` directamente sin conexión. JavaScript debe estar habilitado. El interruptor **Mostrar proyección** está apagado inicialmente y controla la línea proyectada, su banda, tabla y explicación. La estimación inicial de julio se conserva visible aunque la proyección esté apagada. El selector cambia el periodo del gráfico; las flechas del teclado permiten consultar cada mes. Los botones de información muestran fuentes, unidades, definiciones y método. La línea del sismo aparece en todos los gráficos con eje temporal. La comparación histórica tiene dos líneas —observado y estimado—, selector de método y tabla mensual. Sus doce meses son anteriores al sismo; el marcador permanece al final de la ventana temporal, sin agregar observaciones.
 
 ## Corte y resultados
 
@@ -157,7 +157,21 @@ Las referencias son: mismo mes del año anterior, último nivel ajustado y AR(1)
 | ingenuo_estacional | 12 | 1,133171 | 13,447842 |
 | persistencia_ajustada | 12 | 1,307728 | 13,939870 |
 
-En la interfaz se utiliza el RMSE del crecimiento agregado con los pesos del IREC (`rmse_crecimiento_compuesto_log_pp`), dividido por el de la referencia estacional y multiplicado por 100. El modelo auxiliar AR(2) presenta aproximadamente 4,0 % más error que repetir el mismo mes del año anterior. La evaluación estandarizada por componentes permanece en la tabla técnica como diagnóstico adicional. No se afirma superioridad predictiva ni se interpreta el mejor BIC como garantía de mejor pronóstico. Se evalúa el crecimiento compuesto obtenido de los indicadores observados, no un PIB mensual desconocido. Doce meses son una evaluación inicial, no evidencia definitiva.
+La interfaz compara directamente el nivel observado con el nivel estimado a un mes. Los pronósticos originales por componente, guardados en `evaluacion_pronosticos_detalle.csv`, se agregan con los pesos del IREC. Para cada corte se reconstruyen STL y la base utilizando únicamente los meses anteriores al objetivo:
+
+```text
+S_objetivo = estacionalidad del mismo mes del último ciclo disponible al corte
+C_base = promedio en 2019 de exp(Σ_i w_i × log(nivel_ajustado_i al corte))
+IREC_observado = 100 × exp(Σ_i w_i × (log(nivel_observado_i) − S_objetivo_i)) / C_base
+IREC_estimado = 100 × exp(Σ_i w_i × (log(nivel_pronosticado_i) − S_objetivo_i)) / C_base
+Diferencia_puntos = IREC_estimado − IREC_observado
+```
+
+La estacionalidad y la base de cada mes son iguales para observado y estimado, y para todos los métodos. Se mantiene así una escala comparable sin introducir meses posteriores en la estimación. El observado de esta prueba puede diferir de la serie histórica revisada del gráfico principal. Cada punto estimado es un pronóstico independiente a un mes; la línea no representa una proyección acumulada de doce meses.
+
+`evaluacion_irec_observado_estimado.csv` conserva los 60 pares (cinco métodos × doce meses), su corte y diferencias. Se verifica que `100 × log(estimado/observado)` reproduzca el error agregado del paso 33, y que su RMSE coincida con la tabla anterior. El gráfico presenta por defecto el modelo auxiliar que usa el IREC; el selector ofrece las referencias y la especificación alternativa como métodos de pronóstico del mismo índice. Una tabla muestra los doce pares y una lectura señala la diferencia absoluta media y el mes de mayor distancia, sin convertirlos en un porcentaje de precisión.
+
+La evaluación utiliza las versiones actuales de las fuentes, no archivos históricos de publicación. No se interpreta el mejor BIC como garantía de precisión predictiva; doce meses constituyen una evaluación inicial.
 
 ### Robustez y contraste anual
 
